@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import * as winston from 'winston';
 
+// TODO Log onto a file
 const file = new winston.transports.File({
   filename: '../logs/error.log',
   level: 'error',
   handleExceptions: true,
 });
 
-export function unCoughtErrorHandler(
+export function unCaughtErrorHandler(
   err: any,
   req: Request,
   res: Response,

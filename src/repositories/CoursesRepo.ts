@@ -1,23 +1,23 @@
-import { Course } from '../models/Course';
-import { Lesson } from '../models/Lesson';
+// import { Course } from '../models/Course';
+// import { Lesson } from '../models/Lesson';
 
-class CourseRepo {
-  constructor() { }
+// class CourseRepo {
+//   constructor() { }
 
-  getAllCourses(options) {
-    return Course.findAll(options);
-  }
+//   getAllCourses(options) {
+//     return Course.findAll(options);
+//   }
 
-  getById(courseId) {
-    return Course.findByPk(courseId, {
-      include: [
-        {
-          model: Lesson,
-          as: 'lessons'
-        },
-      ],
-    });
-  }
-}
+//   getById(courseId) {
+//     return Course.findByPk(courseId, {
+//       include: [
+//         {
+//           model: Lesson,
+//           as: 'lessons'
+//         },
+//       ],
+//     });
+//   }
+// }
 
-export default new CourseRepo();
+// export default new CourseRepo();

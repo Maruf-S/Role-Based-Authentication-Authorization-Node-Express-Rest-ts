@@ -1,26 +1,23 @@
-import { Sequelize, Options } from 'sequelize';
-const dbUrl: string = process.env.DB_URL || '';
-const nodeEnv: string = process.env.NODE_ENV || '';
+import { PrismaClient } from '@prisma/client';
+const dbUrl: string = process.env.DATABASE_URL || '';
 
 if (!dbUrl) {
   console.log('Please create .env file, refer .env.sample');
   process.exit(0);
 }
 
-let optionsObj: object = { benchmark: true, logging: console.log };
 
-if (nodeEnv && nodeEnv === 'production') {
-  optionsObj = { logging: false };
+declare global {
+  var prisma: PrismaClient;
 }
-const options: Options = optionsObj;
 
-export const sequelize: Sequelize = new Sequelize(dbUrl, options);
+if (process.env.NODE_ENV === 'production') {
+  prisma = new PrismaClient();
+} else {
+  if (!global.prisma) {
+    global.prisma = new PrismaClient();
+  }
+  prisma = global.prisma;
+}
+export default prisma;
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully..');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });

@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserRole {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+
+  @@map("roles")
+}
+
+model User {
+  id                   String                @id @default(uuid())
+  firstName            String
+  lastName             String
+  email                String                @unique
+  normalizedEmail      String                @unique
+  password             String?
+  emailConfirmed       Boolean               @default(false)
+  registrationToken    String?               @db.VarChar(2000)
+  accountLockedOut     Boolean               @default(false)
+  accessFailedCount    Int                   @default(0)
+  phoneNumber          String?
+  phoneNumberConfirmed Boolean               @default(false)
+  registeredBy         User?                 @relation("RegisteredBy", fields: [registrantId], references: [id])
+  registrantId         String?
+  createdAt            DateTime              @default(now())
+  User                 User[]                @relation("RegisteredBy")
+  TicketValidatorUser  TicketValidatorUser[]
+
+  roles      UserRole @relation(fields: [userRoleId], references: [id])
+  userRoleId Int
+  address    String?
+  @@map("users")
+}
+
+model TicketValidatorUser {
+  id                   String   @id @default(uuid())
+  firstName            String
+  lastName             String
+  email                String   @unique
+  normalizedEmail      String   @unique
+  password             String
+  emailConfirmed       Boolean  @default(false)
+  registrationToken    String?  @db.VarChar(2000)
+  accountLockedOut     Boolean  @default(false)
+  accessFailedCount    Int      @default(0)
+  phoneNumber          String   @unique
+  phoneNumberConfirmed Boolean  @default(false)
+  registeredBy         User     @relation(fields: [registrantId], references: [id])
+  registrantId         String
+  createdAt            DateTime @default(now())
+  address              String?
+}

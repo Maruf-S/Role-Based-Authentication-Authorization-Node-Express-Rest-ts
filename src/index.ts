@@ -7,9 +7,11 @@ import * as helmet from 'helmet';
 import * as winston from 'winston';
 
 import rateLimiter from './middlewares/rateLimit';
-import { unCoughtErrorHandler } from './handlers/errorHandler';
+import { unCaughtErrorHandler } from './handlers/errorHandler';
 import Routes from './routes';
-
+import Roles from './data/roles';
+import * as passport from 'passport';
+import passportMiddleware from './middlewares/passport';
 // app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 
 export default class Server {
@@ -28,7 +30,11 @@ export default class Server {
     app.use(json());
     app.use(helmet());
     app.use(rateLimiter()); //  apply to all requests
-    app.use(unCoughtErrorHandler);
+    app.use(passport.initialize());
+
+    passportMiddleware(passport);
+
+    app.use(unCaughtErrorHandler);
   }
 }
 
